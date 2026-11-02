@@ -19,7 +19,7 @@ test -n "$CLOUDFLARE_ACCOUNT_ID" || echo "Browser Run isn't configured in this s
 
 If it isn't set, say so in the thread and don't try the calls.
 
-`CLOUDFLARE_API_TOKEN` is a placeholder. janitor's egress proxy puts the real token on Browser Run requests for this account and on nothing else, so don't go looking for a token or ask anyone for one.
+`CLOUDFLARE_API_TOKEN` is a placeholder. janitor's egress proxy puts the real token on this account's Quick Actions in the table below, and on crawl job lookups (`$BR/crawl/<id>`), and on nothing else. Any other path under `$BR` gets a 403 from the proxy. Don't go looking for a token or ask anyone for one.
 
 Every call below uses this base URL:
 
