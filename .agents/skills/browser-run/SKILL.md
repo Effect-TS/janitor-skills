@@ -51,7 +51,7 @@ curl -sS -X POST "$BR/markdown" \
   -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{ "url": "https://effect.website", "gotoOptions": { "waitUntil": "networkidle0" } }' \
-  | jq -r .result
+  | python3 -c 'import json, sys; print(json.load(sys.stdin)["result"])'
 ```
 
 Without `"waitUntil": "networkidle0"`, a single-page app often comes back empty, because the browser counts the page as loaded before its scripts have rendered anything.
@@ -64,11 +64,11 @@ curl -sS -X POST "$BR/screenshot" \
   -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{ "url": "https://effect.website", "screenshotOptions": { "fullPage": false } }' \
-  --output /workspace/browser-run/effect-website.png
-file /workspace/browser-run/effect-website.png
+  --output /workspace/browser-run/effect-website.png \
+  -w '%{http_code} %{content_type}\n'
 ```
 
-Then open the file with `readFile` to see it. If `file` says JSON rather than PNG, the call failed: `cat` the file to read the error. The viewport is 1920×1080 by default; set `"viewport": { "width": 1280, "height": 800 }` to change it. Full-page screenshots of long pages are large, so prefer the default unless you need the whole page.
+Then open the file with `readFile` to see it. If curl printed anything other than `200 image/png`, the call failed and the file holds a JSON error: `cat` it. The viewport is 1920×1080 by default; set `"viewport": { "width": 1280, "height": 800 }` to change it. Full-page screenshots of long pages are large, so prefer the default unless you need the whole page.
 
 ### Accessibility tree
 
@@ -76,23 +76,23 @@ Then open the file with `readFile` to see it. If `file` says JSON rather than PN
 curl -sS -X POST "$BR/accessibilityTree" \
   -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
   -H 'Content-Type: application/json' \
-  -d '{ "url": "https://effect.website", "root": "main", "interestingOnly": true }' \
-  | jq .result.accessibilityTree
+  -d '{ "url": "https://effect.website", "root": "main", "interestingOnly": true }'
 ```
 
 `root` is a CSS selector that limits the tree to one part of the page.
 
 ### Crawl
 
-`crawl` starts a job and answers with its id. Poll the job until its `status` isn't `running`:
+`crawl` starts a job and answers with its id. Poll the job until its `status` isn't `running`, then fetch `$BR/crawl/$id` once more for the pages:
 
 ```bash
 id=$(curl -sS -X POST "$BR/crawl" \
   -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{ "url": "https://effect.website/docs", "limit": 20, "formats": ["markdown"] }' \
-  | jq -r .result)
-curl -sS "$BR/crawl/$id" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" | jq '.result.status'
+  | python3 -c 'import json, sys; print(json.load(sys.stdin)["result"])')
+curl -sS "$BR/crawl/$id" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  | python3 -c 'import json, sys; print(json.load(sys.stdin)["result"]["status"])'
 ```
 
 Always set `limit`, and keep it small. Every page costs browser time.
