@@ -5,6 +5,14 @@ description: Required instructions for filing an issue
 
 Read over the issue, and create a multica issue for it summarizing the intent of the change.
 
+## Open ended exploration and features
+
+For feature requests where the scope isn't clear, assign the issue to "Nelson".
+
+For design, research and exploration assign the issue to "Architect".
+
+## Bug fixes and well scoped tasks & refactors
+
 Then add the following checklist to the issue:
 
 1. Determine if the issue is worth accepting. If it is requesting features or design changes, then work out the best design.
