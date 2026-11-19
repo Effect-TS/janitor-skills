@@ -5,19 +5,6 @@ description: Required instructions for filing an issue
 
 Read over the issue, and create a multica issue for it summarizing the intent of the change.
 
-## Open ended exploration and features
-
-For feature requests where the scope isn't clear, assign the issue to "Nelson".
-
-For design, research and exploration assign the issue to "Architect".
-
-## Bug fixes and well scoped tasks & refactors
-
-Then add the following checklist to the issue:
-
-1. Determine if the issue is worth accepting. If it is requesting features or design changes, then work out the best design.
-2. In the first agent run, add the bare minimum tests reproduce the issue, that follow repo conventions.
-    - Tests should be in the correct file - avoid one-off test files that do not align with conventions.
-3. In a second run, add the implementation.
-4. In a third pass, review the PR. If there are findings then fix them. Rinse and repeat until no findings.
-5. Get Architect to do a simplification pass
+- Determine the correct multica project to assign the issue to.
+- Encapsulate all the information required into the issue. Don't assume it has the same access as you.
+- Create the issue in the "todo" state
